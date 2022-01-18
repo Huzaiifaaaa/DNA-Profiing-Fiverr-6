@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1642503908 source:c:\users\huzai\documents\github\dna-profiing-fiverr-6\dna-profiling\main.cpp
+	<stdio.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	<fstream>
+	<stdlib.h>
+	<iostream>
+	"ourvector.h"
+
+1642443217 c:\users\huzai\documents\github\dna-profiing-fiverr-6\dna-profiling\ourvector.h
+	<iostream>
+	<exception>
+	<stdexcept>
+	<typeinfo>
+
