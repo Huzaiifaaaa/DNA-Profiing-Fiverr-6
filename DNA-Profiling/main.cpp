@@ -278,134 +278,138 @@ int CountTCTG()//function to count TCTG occurences, takes nothing, returns int
     return count;//return count
 }//end of function
 
-bool Display(string name,string type)
+bool Display(string name,string type)//function to display last loaded Database & DNA, takes file name & returns bool
 {
-    cout<<"\n";
-	ifstream DisplayFile(name);
+    cout<<"\n";//new line
+	ifstream DisplayFile(name);//file object
     char character[10000];
-    int i = 10000;
+    int i = 10000;//initializing variable
 
-    if(!DisplayFile)
+    if(!DisplayFile)//if file is not loaded
     {
-        cout<<"No "<< type << " Loaded!!";
-        return false;
+        cout<<"No "<< type << " Loaded!!";//printing message
+        return false;//returning false
     }
 
-    cout<<type << " Loaded!!\n"<<endl;
-    while(DisplayFile)
+    cout<<type << " Loaded!!\n"<<endl;//printing message
+    while(DisplayFile)//if opened
     {
-        DisplayFile.getline(character, i);
-        cout << character << endl;
+        DisplayFile.getline(character, i);//reading file
+        cout << character << endl;//printing all characters
     }
-    DisplayFile.close();
+    DisplayFile.close();//closing file
 
-    return true;
-}
+    return true;//returning file
+}//end of function
 
-bool DbLoaded(bool success, string databasename)
+bool DbLoaded(bool success, string databasename)//function to verify database loading, takes bool & database name, returns bools
 {
-    if(success==true)
+    if(success==true)//if database file loaded/opened
     {
-        cout<<"Database *"<< databasename<< "* Loaded Successfully!!"<<endl;
+        cout<<"Database *"<< databasename<< "* Loaded Successfully!!"<<endl;//printing message
     }
-    else
+    else//if not loaded
     {
-        DbNotLoaded();
-        return false;
+        DbNotLoaded();//calling function
+        return false;//returning false
     }
-    return true;
-}
+    return true;//returning true
+}//end of function
 
-bool DnaLoaded(bool success, string dnafilename)
+bool DnaLoaded(bool success, string dnafilename)//function to verify database loading, takes bool & dnafile , returns bool
 {
-    if(success==true)
+    if(success==true)//if database file loaded/opened
     {
         cout<<"DNA File *"<< dnafilename<< "* Loaded Successfully!!"<<endl;
     }
-    else
+    else//if not loaded
     {
-        DnaNotLoaded();
-        return false;
+        DnaNotLoaded();//calling function
+        return false;//returning false
     }
-    getchar();
-    return true;
-}
+    getchar();//get character
+    return true;//returning true
+}//end of function
 
-bool LoadDna(string dnafilename)
+bool LoadDna(string dnafilename)//function to load DNA file, takes filename, returns bool
 {
-    cout<<"Loading DNA File-->" << dnafilename<<endl;
-    ifstream LoadDnaFile;
-    LoadDnaFile.open(dnafilename,ios::in);
-    if(!LoadDnaFile)
+    cout<<"Loading DNA File-->" << dnafilename<<endl;//printing message
+    ifstream LoadDnaFile;//file object
+    LoadDnaFile.open(dnafilename,ios::in);//opening file
+
+    if(!LoadDnaFile)//if file not opened/found
     {
         return false;
     }
-    else
+    else//if opened
     {
-        char character;
+        char character;//initializing variable
 
-		while (1) {
-			LoadDnaFile >> character;
-			if (LoadDnaFile.eof())
-				break;
+		while (1)//looping
+        {
+			LoadDnaFile >> character;//getting data
+			if (LoadDnaFile.eof())//checking if END OF FILE reached
+				break;//breaking
 
-			DNA.push_back(character);
+			DNA.push_back(character);//pushing character to vector
 		}
-		LoadDnaFile.close();
-        DNAFILENAME=dnafilename;
+		LoadDnaFile.close();//closing file
+        DNAFILENAME=dnafilename;//assigning value
     }
 
-    return true;
-}
+    return true;//returning true
+}//end of function
 
-bool LoadDb(string databasename)
+bool LoadDb(string databasename)//function to load DATABASE file, takes filename, returns bool
 {
-    cout<<"Loading Database-->" << databasename<<endl;
-    ifstream LoadDatabase;
-    LoadDatabase.open(databasename,ios::in);
-    if(!LoadDatabase)
+    cout<<"Loading Database-->" << databasename<<endl;//printing message
+    ifstream LoadDatabase;//file object
+    LoadDatabase.open(databasename,ios::in);//opening file
+
+    if(!LoadDatabase)//if file not opened/found
     {
-        return false;
+        return false;//returning false
     }
-    else
+    else//if found
     {
-        char character;
+        char character;//initializing variable
 
-		while (1) {
-			LoadDatabase >> character;
-			if (LoadDatabase.eof())
-				break;
+		while (1) //looping
+        {
+			LoadDatabase >> character;//getting data
+			if (LoadDatabase.eof())//checking if END OF FILE reached
+				break;//breaking
 
-			DB.push_back(character);
-		}
-		DATABASENAME=databasename;
-        LoadDatabase.close();
-    }
+			DB.push_back(character);//pushing character to vector
+		}//end of while
+        LoadDatabase.close();//closing file
+        DATABASENAME=databasename;//assigning value
+    }//end of else
 
-    return true;
-}
+    return true;//returning true
+}//end of function
 
-void DbNotLoaded()
+void DbNotLoaded()//if db file not opened, takes nothing, returns nothing
 {
-    cout<<"Database Not Found!!\n\n";
-    PressKey();
-}
+    cout<<"Database Not Found!!\n\n";//printing message
+    PressKey();//calling function
+}//end of function
 
-void DnaNotLoaded()
+void DnaNotLoaded()//if dna file not opened, takes nothing, returns nothing
 {
-    cout<<"DNA File Not Found/Loaded!!\n\n";
-    PressKey();
-}
+    cout<<"DNA File Not Found/Loaded!!\n\n";//printing message
+    PressKey();//calling function
+}//end of function
 
-void PressKey()
+void PressKey()//function to stop execution till enter is pressed, takes nothing, returns nothing
 {
-    cout<<"Press Enter To Continue!!\n";
-    getchar();
-}
+    cout<<"Press Enter To Continue!!\n";//printing message
+    getchar();//get character
+}//end of function
 
-void Menu()
+void Menu()//function to print menu, takes nothing, returns nothing
 {
-    system("cls");
+    system("cls");//clear screen
     cout<<"\n";
     cout<<"WELCOME TO DNA PROFILING APPLICATION\n";
     cout<<"\n";
@@ -417,4 +421,4 @@ void Menu()
     cout<<"4-PROCESS--> process\n";
     cout<<"5-SEARCH--> search\n";
     cout<<"6-EXIT--> #\n";
-}
+}//end of function
