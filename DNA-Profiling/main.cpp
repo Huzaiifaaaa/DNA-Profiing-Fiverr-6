@@ -4,20 +4,23 @@
 #include<string.h>
 #include <fstream>
 #include<stdlib.h>
-#include<iostream>
-#include "ourvector.h"
+#include<sstream>
+#include<iostream>//including standard libraries
 
-using namespace std;
+#include "ourvector.h"//including user defined libraries
 
+using namespace std;//using namespace
+
+//function declaration
 void Menu();
 void PressKey();
+bool LoadDb(string databasename);
 void DbNotLoaded();
 bool DbLoaded(bool success,string databaename);
+bool LoadDna(string dnafilename);
 void DnaNotLoaded();
 bool DnaLoaded(bool success, string dnafilename);
 bool Display(string name,string type);
-bool LoadDb(string databasename);
-bool LoadDna(string dnafilename);
 int CountAGATC();
 int CountTTTTTTCT();
 int CountAATG();
@@ -28,81 +31,86 @@ int CountGAAA();
 int CountTCTG();
 void CountAll();
 
+//global variables declaration
 string DATABASENAME;
 string DNAFILENAME;
+
+//global vectors declaration,
 ourvector<char> DB;
 ourvector<char> DNA;
 
+//main function/ driver code, execution starts here
 int main()
 {
-    while(1)
+    while(1)//looping infinite times
     {
-        INVALIDCOMMAND:
+        INVALIDCOMMAND://label
+
         char command[100]={0};
         string subcommand;
-        bool success=false;
+        bool success=false;//declaring & initializing variables
 
-        Menu();
+        Menu();//calling menu function
 
-        cout<<"\nEnter Command:";
-        cin.getline(command,100);
-        subcommand=command;
+        cout<<"\nEnter Command:";//printing message
+        cin.getline(command,100);//taking input
+        subcommand=command;//assigning to subcommand
 
-        if(subcommand.substr(0,7)=="load_db")
+        if(subcommand.substr(0,7)=="load_db")//if "load_db" command
         {
-            string databasename=subcommand.substr(8,(subcommand.length()-7));
-            success=LoadDb(databasename);
+            string databasename=subcommand.substr(8,(subcommand.length()-7));//getting database name by substringing
+            success=LoadDb(databasename);//loading database
 
-            if(DbLoaded(success,databasename)==false)
+            if(DbLoaded(success,databasename)==false)//if db not loaded
             {
-                goto INVALIDCOMMAND;
+                goto INVALIDCOMMAND;//goto INVALIDCOMMAND
             }
 
-            PressKey();
-        }
-        else if(subcommand=="display")
+            PressKey();//calling function
+        }//end of if
+        else if(subcommand=="display")//if "display" command
         {
-            success=Display(DATABASENAME, "Database");
-            success=Display(DNAFILENAME, "DNA File");
-            cout<<"\n\n";
-            PressKey();
+            success=Display(DATABASENAME, "Database");//calling display function for Database
+            success=Display(DNAFILENAME, "DNA File");//calling display function for DNA
+            cout<<"\n\n";//new line
+            PressKey();//calling function
         }
-        else if(subcommand.substr(0,8)=="load_dna")
+        else if(subcommand.substr(0,8)=="load_dna")//if "load_dna" command
         {
-            string dnafilename=subcommand.substr(9,(subcommand.length()-7));
-            success=LoadDna(dnafilename);
+            string dnafilename=subcommand.substr(9,(subcommand.length()-7));//getting dna file name by substringing
+            success=LoadDna(dnafilename);//loading dna
 
-            if(DnaLoaded(success,dnafilename)==false)
+            if(DnaLoaded(success,dnafilename)==false)//if dna not loaded
             {
-                goto INVALIDCOMMAND;
+                goto INVALIDCOMMAND;//goto INVALIDCOMMAND
             }
         }
-        else if(subcommand=="process")
+        else if(subcommand=="process")//if process command
         {
-           CountAll();
+           CountAll();//calling function
         }
-        else if(subcommand=="search")
+        else if(subcommand=="search")//if search command
         {
 
         }
-        else if(subcommand=="#")
+        else if(subcommand=="#")//if exit command
         {
-            exit(1);
+            exit(1);//exit
         }
-        else
+        else//if any other commmand
         {
-            cout<<"\nINVALID COMMAND!\n";
-            PressKey();
-            goto INVALIDCOMMAND;
+            cout<<"\nINVALID COMMAND!\n";//printing message
+            PressKey();//calling function
+            goto INVALIDCOMMAND;//goto INVALIDCOMMAND
         }
-    }
+    }//end of while
 
-    return 0;
-}
+    return 0;//returning zero
+}//end of function
 
-void CountAll()
+void CountAll()//function to count STRS
 {
-    cout<<"\nDNA Is Being Processed!!"<<endl;
+    cout<<"\nDNA Is Being Processed!!"<<endl;//printing message
 
     int countAGATC=CountAGATC();
     int countTTTTTTCT=CountTTTTTTCT();
@@ -111,7 +119,7 @@ void CountAll()
     int countGATA=CountGATA();
     int countTATC= CountTATC();
     int countGAAA=CountGAAA();
-    int countTCTG=CountTCTG();
+    int countTCTG=CountTCTG();//counting each sequence
 
     cout<<"\nAGATC    : "<<countAGATC<<endl;
     cout<<"TTTTTTCT : "<<countTTTTTTCT<<endl;
@@ -120,153 +128,155 @@ void CountAll()
     cout<<"GATA     : "<<countGATA<<endl;
     cout<<"TATC     : "<<countTATC<<endl;
     cout<<"GAAA     : "<<countGAAA<<endl;
-    cout<<"TCTG     : "<<countTCTG<<endl;
+    cout<<"TCTG     : "<<countTCTG<<endl;//printing occurence
 
-    cout<<"\nDNA Processed Successfully!!"<<endl;
-    PressKey();
+    cout<<"\nDNA Processed Successfully!!"<<endl;//printing message
+    PressKey();//calling function
 }
 
-int CountAGATC()
+int CountAGATC()//function to count AGATC occurences, takes nothing, returns int
 {
-    int count=0;
+    int count=0;//initializing variable
 
-    for(int i=0;i<DNA.size();i++)
+    for(int i=0;i<DNA.size();i++)//looping DNA.SIZE() Times
     {
-        if(DNA.size()-i>5)
+        if(DNA.size()-i>5)//if i>DNA.SIZE()
         {
-            if(DNA[i]=='A' && DNA[i+1]=='G' && DNA[i+2]=='A' && DNA[i+3]=='T' && DNA[i+4]=='C')
+            if(DNA[i]=='A' && DNA[i+1]=='G' && DNA[i+2]=='A' && DNA[i+3]=='T' && DNA[i+4]=='C')//checking for AGTAC
             {
-                count++;
+                count++;//if found, count++
             }
         }
-    }
+    }//end of for
 
-    return count;
-}
+    return count;//return count
+}//end of function
 
-int CountTTTTTTCT()
+int CountTTTTTTCT()//function to count TTTTTTCT occurences, takes nothing, returns int
 {
-    int count=0;
+    int count=0;//initializing variable
 
-    for(int i=0;i<DNA.size();i++)
+    for(int i=0;i<DNA.size();i++)//looping DNA.SIZE() Times
     {
-        if (DNA.size()-i>8)
+        if (DNA.size()-i>8)//if i>DNA.SIZE()
         {
-             if(DNA[i]=='T' && DNA[i+1]=='T' && DNA[i+2]=='T' && DNA[i+3]=='T' && DNA[i+4]=='T'  && DNA[i+5]=='T'  && DNA[i+6]=='C' && DNA[i+7]=='T')
+             if(DNA[i]=='T' && DNA[i+1]=='T' && DNA[i+2]=='T' && DNA[i+3]=='T' && DNA[i+4]=='T'  && DNA[i+5]=='T'  && DNA[i+6]=='C' && DNA[i+7]=='T')//checking for TTTTTTCT
             {
-                count++;
+                count++;//if found, count++
             }
         }
-    }
+    }//end of for
 
-    return count;
-}
+    return count;//return count
+}//end of function
 
-int CountAATG()
+int CountAATG()//function to count AATG occurences, takes nothing, returns int
 {
-    int count=0;
+    int count=0;//initializing variable
 
-    for(int i=0;i<DNA.size();i++)
+    for(int i=0;i<DNA.size();i++)//looping DNA.SIZE() Times
     {
-        if(DNA.size()-i>4)
+        if(DNA.size()-i>4)//if i>DNA.SIZE()
         {
-             if(DNA[i]=='A' && DNA[i+1]=='A' && DNA[i+2]=='T' && DNA[i+3]=='G')
+             if(DNA[i]=='A' && DNA[i+1]=='A' && DNA[i+2]=='T' && DNA[i+3]=='G')//checking for AATG
             {
-                count++;
+                count++;//if found, count++
             }
         }
-    }
+    }//end of for
 
-    return count;
-}
+    return count;//return count
+}//end of function
 
-int CountTCTAG()
+int CountTCTAG()//function to count TCTAG occurences, takes nothing, returns int
 {
-        int count=0;
+    int count=0;//initializing variable
 
-    for(int i=0;i<DNA.size();i++)
+    for(int i=0;i<DNA.size();i++)//looping DNA.SIZE() Times
     {
-        if(DNA.size()-i>5)
+        if(DNA.size()-i>5)//if i>DNA.SIZE()
         {
-            if(DNA[i]=='T' && DNA[i+1]=='C' && DNA[i+2]=='T' && DNA[i+3]=='A' && DNA[i+4]=='G')
+            if(DNA[i]=='T' && DNA[i+1]=='C' && DNA[i+2]=='T' && DNA[i+3]=='A' && DNA[i+4]=='G')//checking for TCTAG
             {
-                count++;
+                count++;//if found, count++
             }
         }
-    }
+    }//end of for
 
-    return count;
-}
+    return count;//return count
+}//end of function
 
-int CountGATA()
+int CountGATA()//function to count GATA occurences, takes nothing, returns int
 {
-    int count=0;
+    int count=0;//initializing variable
 
-    for(int i=0;i<DNA.size();i++)
+    for(int i=0;i<DNA.size();i++)//looping DNA.SIZE() Times
     {
-        if(DNA.size()-i>4)
+        if(DNA.size()-i>4)//if i>DNA.SIZE()
         {
-             if(DNA[i]=='G' && DNA[i+1]=='A' && DNA[i+2]=='T' && DNA[i+3]=='A')
+             if(DNA[i]=='G' && DNA[i+1]=='A' && DNA[i+2]=='T' && DNA[i+3]=='A')//checking for GATA
             {
-                count++;
+                count++;//if found, count++
             }
         }
-    }
+    }//end of for
 
-    return count;
-}
+    return count;//return count
+}//end of function
 
-int CountTATC()
+int CountTATC()//function to count TATC occurences, takes nothing, returns int
 {
-    int count=0;
+    int count=0;//initializing variable
 
-    for(int i=0;i<DNA.size();i++)
+    for(int i=0;i<DNA.size();i++)//looping DNA.SIZE() Times
     {
-        if(DNA.size()-i>4)
+        if(DNA.size()-i>4)//if i>DNA.SIZE()
         {
-            if(DNA[i]=='T' && DNA[i+1]=='A' && DNA[i+2]=='T' && DNA[i+3]=='C')
+            if(DNA[i]=='T' && DNA[i+1]=='A' && DNA[i+2]=='T' && DNA[i+3]=='C')//checking for TATC
             {
-                count++;
+                count++;//if found, count++
             }
         }
-    }
+    }//end of for
 
-    return count;
-}
-int CountGAAA()
+    return count;//return count
+}//end of function
+
+int CountGAAA()//function to count GAAA occurences, takes nothing, returns int
 {
-    int count=0;
+    int count=0;//initializing variable
 
-    for(int i=0;i<DNA.size();i++)
+    for(int i=0;i<DNA.size();i++)//looping DNA.SIZE() Times
     {
-        if(DNA.size()-i>4)
+        if(DNA.size()-i>4)//if i>DNA.SIZE()
         {
-            if(DNA[i]=='G' && DNA[i+1]=='A' && DNA[i+2]=='A' && DNA[i+3]=='A')
+            if(DNA[i]=='G' && DNA[i+1]=='A' && DNA[i+2]=='A' && DNA[i+3]=='A')//checking for GAAA
             {
-                count++;
+                count++;//if found, count++
             }
         }
-    }
+    }//end of for
 
-    return count;
-}
-int CountTCTG()
+    return count;//return count
+}//end of function
+
+int CountTCTG()//function to count TCTG occurences, takes nothing, returns int
 {
-    int count=0;
+    int count=0;//initializing variable
 
-    for(int i=0;i<DNA.size();i++)
+    for(int i=0;i<DNA.size();i++)//looping DNA.SIZE() Times
     {
-        if(DNA.size()-i>4)
+        if(DNA.size()-i>4)//if i>DNA.SIZE()
         {
-            if(DNA[i]=='T' && DNA[i+1]=='C' && DNA[i+2]=='T' && DNA[i+3]=='G')
+            if(DNA[i]=='T' && DNA[i+1]=='C' && DNA[i+2]=='T' && DNA[i+3]=='G')//checking for TCTG
             {
-                count++;
+                count++;//if found, count++
             }
         }
-    }
+    }//end of for
 
-    return count;
-}
+    return count;//return count
+}//end of function
 
 bool Display(string name,string type)
 {
