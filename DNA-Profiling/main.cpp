@@ -34,24 +34,23 @@ void CountAll();
 void SearchAll(int countAGATC,int countTTTTTTCT,int countAATG,int countTCTAG,int countGATA,int countTATC,int countGAAA,int countTCTG);
 bool SearchAGATC(int countAGATC);
 void NumberSplitter(int number);
-bool CompareVectors();
+void CompareVectors();
+void SearchResult();
+void InvalidCommand();
+void DisplayAll();
+void LoadDatabase(string subcommand);
+void LoadDNA(string subcommand);
 bool ReadLine(string filename,string compare,int size);
 
 //global variables declaration
 string DATABASENAME;
 string DNAFILENAME;
 string SEARCHRESULT;
-char COMPAREARRAY[100]={0};
 
-int SPLITTED[10];
 int COUNTER=0;
 int TEMPCOUNTER=0;
 int VECTORSIZE=0;
-
-
-
-int PRESENT[30];
-int TEST[30];
+bool PROCESSED=false;
 
 //global vectors declaration,
 ourvector<char> DB;
@@ -62,58 +61,90 @@ ourvector<char> COMPARE;
 int main()
 {
     while(1){//looping infinite times
-        INVALIDCOMMAND://label
-        char command[100]={0};
-        string subcommand;
-        bool success=false;//declaring & initializing variables
+        char command[100]={0}; string subcommand;
         Menu();//calling menu function
+
         cout<<"\nEnter Command:";//printing message
         cin.getline(command,100);//taking input
         subcommand=command;//assigning to subcommand
+
         if(subcommand.substr(0,7)=="load_db") {//if "load_db" command
-            string databasename=subcommand.substr(8,(subcommand.length()-7));//getting database name by substringing
-            success=LoadDb(databasename);//loading database
-            if(DbLoaded(success,databasename)==false){//if db not loaded
-                goto INVALIDCOMMAND;//goto INVALIDCOMMAND
-            }
-            PressKey();//calling function
+            LoadDatabase(subcommand);
         }//end of if
         else if(subcommand=="display"){//if "display" command
-            success=Display(DATABASENAME, "Database");//calling display function for Database
-            success=Display(DNAFILENAME, "DNA File");//calling display function for DNA
-            cout<<"\n\n";//new line
-            PressKey();//calling function
+           DisplayAll();//calling display function
         }
         else if(subcommand.substr(0,8)=="load_dna"){//if "load_dna" command
-            string dnafilename=subcommand.substr(9,(subcommand.length()-7));//getting dna file name by substringing
-            success=LoadDna(dnafilename);//loading dna
-            if(DnaLoaded(success,dnafilename)==false){//if dna not loaded
-                goto INVALIDCOMMAND;//goto INVALIDCOMMAND
-            }
+           LoadDNA(subcommand);
         }
         else if(subcommand=="process"){//if process command
            CountAll();//calling function
         }
         else if(subcommand=="search"){//if search command
-            cout<<"\nMatch Found--> "<<SEARCHRESULT<<endl;
-            PressKey();
+            SearchResult();
         }
         else if(subcommand=="#"){//if exit command
             exit(1);//exit
         }
-        else {//if any other commmand
-            cout<<"\nINVALID COMMAND!\n";//printing message
-            PressKey();//calling function
-            goto INVALIDCOMMAND;//goto INVALIDCOMMAND
+        else {//if any other command
+            InvalidCommand();
         }
     }//end of while
     return 0;//returning zero
 }//end of function
 
+void DisplayAll()//displays DNA & database
+{
+    bool success;
+    success=Display(DATABASENAME, "Database");//calling display function for Database
+    success=Display(DNAFILENAME, "DNA File");//calling display function for DNA
+    cout<<"\n\n";//new line
+    PressKey();//calling function
+}
+
+void SearchResult()//prints search result
+{
+    if(PROCESSED==false)//if DNA is not processed
+    {
+         cout<<"\nDNA Is Not Processed!"<<endl;
+    }
+    else
+    {
+         cout<<"\nSearch Result--> "<<SEARCHRESULT<<endl;
+    }
+
+    PressKey();
+}
+
+void InvalidCommand()//prints message on invalid command
+{
+    cout<<"\nINVALID COMMAND!\n";//printing message
+    PressKey();//calling function
+}
+
+void LoadDatabase(string subcommand)//loads database
+{
+    bool success;
+    string databasename=subcommand.substr(8,(subcommand.length()-7));//getting database name by substringing
+    success=LoadDb(databasename);//loading database
+    success=DbLoaded(success,databasename);//if db not loaded
+    PressKey();//calling function
+}
+
+void LoadDNA(string subcommand)//loads dna
+{
+    bool success;
+    PROCESSED=false;
+    string dnafilename=subcommand.substr(9,(subcommand.length()-7));//getting dna file name by sub stringing
+    success=LoadDna(dnafilename);//loading dna
+    DnaLoaded(success,dnafilename);//if dna not loaded
+    PressKey();
+}
+
 void SearchAll(int countAGATC,int countTTTTTTCT,int countAATG,int countTCTAG,int countGATA,int countTATC,int countGAAA,int countTCTG)
  {
-    COMPARE.clear();
-    VECTORSIZE=0;
+    COMPARE.clear();//clearing memory occupied by COMPARE
+    VECTORSIZE=0;//initializing VECTORSIZE
     NumberSplitter(countAGATC);
     NumberSplitter(countTTTTTTCT);
     NumberSplitter(countAATG);
@@ -121,99 +152,89 @@ void SearchAll(int countAGATC,int countTTTTTTCT,int countAATG,int countTCTAG,int
     NumberSplitter(countGATA);
     NumberSplitter(countTATC);
     NumberSplitter(countGAAA);
-    NumberSplitter(countTCTG);
+    NumberSplitter(countTCTG);//calling functin
 
-    if(CompareVectors())
-        cout<<"FOUND\n";
-    else
-        cout<<"NOT FOUND\n";
+    CompareVectors();//calling function
+}
 
-    }
-
-
-bool CompareVectors()
+void CompareVectors()//takes nothing, returns nothing.
 {
-     for(int i=0;i<30;i++)
-     {
-         PRESENT[i]=2;
-     }
-
-     VECTORSIZE=COMPARE.size()-1;
-
-    string compare;
-    for (int i = 0; i < COMPARE.size()-1; i++) {
+    string compare;//declaring variable
+    for (int i = 0; i < COMPARE.size()-1; i++)//converting to string
+    {
         compare = compare + COMPARE[i];
     }
 
-    bool found=ReadLine(DATABASENAME,compare,VECTORSIZE);
+    bool found=ReadLine(DATABASENAME,compare,COMPARE.size()-1);
 
-    return true;
-}
+    if(found==false)//if nothing found
+    {
+        SEARCHRESULT="No Match Found!!";
+    }
+}//end of function
 
-bool ReadLine(string filename,string compare,int size)
+bool ReadLine(string filename,string compare,int size)//function ReadLine, takes 3 arguments, returns bool
 {
-    SEARCHRESULT="";
-    std::ifstream file(filename);
+    SEARCHRESULT="";//
+    std::ifstream file(filename);//opening file
     std::string str;
 
-    int CompareLength = compare.length();
-    char ArrayCompare[CompareLength + 1];
+    char ArrayCompare[COMPARE.size()];//converting string to char array
     strcpy(ArrayCompare, compare.c_str());
 
-    while (std::getline(file, str))
+    while (std::getline(file, str))//reading line
     {
         int StrLength = str.length();
         char StrArray[StrLength + 1];
-        strcpy(StrArray, str.c_str());
+        strcpy(StrArray, str.c_str());//converting string to char array
 
-        int len=str.length()-size;
+        int len=str.length()-size;//getting length of name
 
-        if(compare==str.substr(len,size))
+        if(compare==str.substr(len,size))//sub stringing & comparing
         {
             for(int i=0;i<len-1;i++)
             {
-                SEARCHRESULT=SEARCHRESULT+StrArray[i];
+                SEARCHRESULT=SEARCHRESULT+StrArray[i];//concatenating name
             }
-            return true;
+            return true;//if result found
         }
     }
 
-    return false;
-}
+    return false;//returning
+}//end of function
 
- void NumberSplitter(int Number)
+ void NumberSplitter(int Number)//function NumberSplitter, takes 1 argument & returns nothing--> E.g-> INPUT=12, OUTPUT 1 & 2
  {
-    int number=Number;
-    int exponent = floor( log10( static_cast<double>(number) ) );
+    int number=Number;//getting number
+    int exponent = floor( log10( static_cast<double>(number) ) );//getting exponent wrt number
     int i=0;
 	int divisor;
 	int num;
 
-	if(Number==0)
+	if(Number==0)//if number is zero, pushing it to vector
     {
-        COMPARE.push_back(0+'0');
-        COUNTER++;
+        COMPARE.push_back(0+'0');//push to vector
+        COUNTER++;//increment counter
     }
 
-	while (number != 0)
+	while (number != 0)//looping
 	{
 		divisor = pow(10.0, exponent);
 		num=(number/divisor);
-		COMPARE.push_back(num+'0');
-        if(Number%10==0 && TEMPCOUNTER!=7)
+		COMPARE.push_back(num+'0');//pushing to vector
+        if(Number%10==0 && TEMPCOUNTER!=7)//if input is 40-> we get 4 as output, so to get 0
         {
-            COMPARE.push_back(0+'0');
+            COMPARE.push_back(0+'0');//pushing zero
         }
 		number %= divisor;
 		exponent--;
 		COUNTER++;
 	}
 
-    COMPARE.push_back(',');
+    COMPARE.push_back(',');//pushing ,
     COUNTER++;
-
-    TEMPCOUNTER++;
- }
+    TEMPCOUNTER++;//incrementing
+ }//end of function
 
 void CountAll()//function to count STRS
 {
@@ -228,7 +249,7 @@ void CountAll()//function to count STRS
     int countGAAA=CountGAAA();
     int countTCTG=CountTCTG();//counting each sequence
 
-    SearchAll(countAGATC,countTTTTTTCT,countAATG,countTCTAG,countGATA,countTATC,countGAAA,countTCTG);
+    SearchAll(countAGATC,countTTTTTTCT,countAATG,countTCTAG,countGATA,countTATC,countGAAA,countTCTG);//calling search function, passing all combinations
 
     cout<<"\nAGATC    : "<<countAGATC<<endl;
     cout<<"TTTTTTCT : "<<countTTTTTTCT<<endl;
@@ -240,6 +261,7 @@ void CountAll()//function to count STRS
     cout<<"TCTG     : "<<countTCTG<<endl;//printing occurence
 
     cout<<"\nDNA Processed Successfully!!"<<endl;//printing message
+    PROCESSED=true;
     PressKey();//calling function
 }
 
@@ -436,7 +458,6 @@ bool DnaLoaded(bool success, string dnafilename)//function to verify database lo
         DnaNotLoaded();//calling function
         return false;//returning false
     }
-    getchar();//get character
     return true;//returning true
 }//end of function
 
@@ -504,13 +525,11 @@ bool LoadDb(string databasename)//function to load DATABASE file, takes filename
 void DbNotLoaded()//if db file not opened, takes nothing, returns nothing
 {
     cout<<"Database Not Found!!\n\n";//printing message
-    PressKey();//calling function
 }//end of function
 
 void DnaNotLoaded()//if dna file not opened, takes nothing, returns nothing
 {
     cout<<"DNA File Not Found/Loaded!!\n\n";//printing message
-    PressKey();//calling function
 }//end of function
 
 void PressKey()//function to stop execution till enter is pressed, takes nothing, returns nothing
