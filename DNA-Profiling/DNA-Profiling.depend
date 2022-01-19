@@ -16,3 +16,21 @@
 	<stdexcept>
 	<typeinfo>
 
+1642603029 source:c:\users\huzai\documents\github\dna-profiling-fiverr-6\dna-profiling\main.cpp
+	<stdio.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	<math.h>
+	<fstream>
+	<stdlib.h>
+	<sstream>
+	<iostream>
+	"ourvector.h"
+
+1642443217 c:\users\huzai\documents\github\dna-profiling-fiverr-6\dna-profiling\ourvector.h
+	<iostream>
+	<exception>
+	<stdexcept>
+	<typeinfo>
+
